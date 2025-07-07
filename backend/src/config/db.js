@@ -1,15 +1,23 @@
 import mongoose from "mongoose";
 
-const connectDB = async () => {
+/**
+ * Database connection configuration
+ * How: Uses mongoose to connect to MongoDB with connection string from environment
+ * Why: Centralizes database connection logic and handles connection errors gracefully
+ */
+const dbConnect = async () => {
   try {
-    const conn = await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/novanector"
-    );
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    // Connect to MongoDB using connection string from environment variables
+    // Why: Environment variables keep sensitive connection details secure
+    const connect = await mongoose.connect(process.env.MONGODB_URL);
+
+    console.log(`MongoDB Connected: ${connect.connection.host}`);
   } catch (error) {
-    console.error("❌ Database connection error:", error.message);
-    process.exit(1);
+    // Log the error and exit process if database connection fails
+    // Why: The application cannot function without database connectivity
+    console.error(`MongoDB connection error: ${error.message}`);
+    process.exit(1); // Exit with failure code
   }
 };
 
-export default connectDB;
+export default dbConnect;
